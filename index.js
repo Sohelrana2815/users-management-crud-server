@@ -39,11 +39,28 @@ async function run() {
     });
 
     // post or create method
-
     app.post("/users", async (req, res) => {
       const newUser = req.body;
       console.log(newUser);
       const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
+
+    // put
+    app.put("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedUser = req.body;
+      const updateDoc = {
+        $set: {
+          name: updatedUser.name,
+          email: updatedUser.email,
+          password: updatedUser.password,
+          gender: updatedUser.gender,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
       res.send(result);
     });
 
@@ -74,7 +91,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Users management server is running on pot ${port}`);
 });
-
-
-//jfasd
-kjfalsjflkas
